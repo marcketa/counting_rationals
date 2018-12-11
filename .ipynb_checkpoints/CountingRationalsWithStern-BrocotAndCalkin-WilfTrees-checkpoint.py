@@ -34,8 +34,10 @@ import matplotlib.pyplot as plt
 from itertools import product
 
 # %% [markdown]
-# ### Binary tree   
-# #### Levels
+# # Binary tree
+
+# %% [markdown]
+# ## Levels  
 # In the following we'll represent the `m` first successive levels of a binary tree by a list of `m` lists each one of $1,2,\cdots,2^{m-1}$ nodes representing at level $0$ the root, at level $1$ the left and right sons of the root, and at the level $k+1$ the left and right sons of the $i^{th}$ node of the level $k$  by respectively the nodes with respective indices $2i$ and $2i+1$ of this level $k+1$ where $i \in \{0,1,\ldots,k-1\}$.  
 # Below a function `bin_levels(lst)` that transforms a list `lst` in the levels of the corresponding binary tree.
 
@@ -117,7 +119,7 @@ def print_bintree(lvls : List[List[Any]],r: int = 1, fmt: Callable[[Any],str] = 
 print_bintree(bin_levels(l13))
 
 # %% [markdown]
-# #### Path string   
+# ##  Path string   
 # Let's use the letters L and R to stand for going down to the left or right branch as we proceed from the root of a binary tree to a particular node; then a string of L's and R's uniquely identifies a place in the tree.
 # For example in the tree above, to reach the node with label 12, from the root 1 we are going right to 3, left to 6 and left to 12. The node with label 12 can be adressed by the "path string" `'RLL'`.  
 # The function `paths_level(k)` returns the "path strings" ordered list describing all the nodes the $k^{th}$ level of a binary tree:
@@ -145,7 +147,7 @@ def paths_level(k: int) -> List[str]:
 print(paths_level(3))
 
 # %% [markdown]
-# #### Bits representation  
+# ##  Bits representation  
 
 # %%
 def ints2bin(ints: List[int], nbits: Optional[int] = None) -> List[str]:
@@ -253,20 +255,22 @@ print([str_translate(s,'LR','01') for s in paths_lvl3])
 print([level_idx(s)[1] for s in paths_lvl3])
 
 # %% [markdown]
-# ### Stern Brocot Tree
+# # Stern Brocot tree   
 # The following text cells are a transcription of the chapter on Stern-Brocot tree in the Donald Knuth's book
 # _Concrete Mathematics_ (p.129) and the Python cells a programming materialization of this chapter.
 
-# %% [markdown]
-# #### There's a beautiful way to construct the set of all nonnegative fractions m/n with m ⊥ n , called the Stern-Brocot tree.  
-# Using the Donald Knuth's notation we'll write $m \perp n$ for a pair of two integers $m,n$ who are relatively prime (coprime). A fraction $m/n$ is in lowest terms if and only if $m \perp n$ .
-#
-# The idea is to start with the two fractions (0/1, 1/0) (here we add 1/0 for $\infty$!) and then to repeat the following operation as many times as desired:   
+# %% [raw]
+#  There's a beautiful way to construct the set of all nonnegative fractions m/n with m ⊥ n , called the Stern-Brocot tree.  
+# Using the Donald Knuth's notation we'll write $m \perp n$ for a pair of two integers $m,n$ who are relatively prime (coprime) or in other words, if the greatest common denominator of $m$ and $n$ is 1 ($gcd(m,n) = m \wedge n = 1$).  
+# A fraction $m/n$ is in lowest terms or said irreducible if and only if $m \perp n$ .  
+# The idea is to start with the two fractions (0/1, 1/0), the smallest non negative fraction and the greatest (here we add 1/0 for $\infty$!) and then to repeat the following operation as many times as desired:   
 # Insert (m + m')/(n + n') between two adjacent fractions m/n and m'/n'.  
 # The new fraction **(m+m')/(n+n')** is called the **mediant** of **m/n** and **m'/n'**.  
-# The first step gives us one new entry 1/1, the next two more, 1/2 between 0/1 and 1/1, and 2/1 between 1/1 and 1/0 and so on, building a binary tree with root 1/1.
+# The first step gives us one new entry 1/1,  
+# the next two more, 1/2 between 0/1 and 1/1, and 2/1 between 1/1 and 1/0 and so on, building a binary tree with root 1/1.
 
 # %% [markdown]
+# ## Numerators tree  
 # To build this construct we'll first examine a way to produce the tree corresponding to the numerators of these nonnegative fractions.  
 # We'll start with the integers(0,1) and then we repeat the following operation as many times as desired, i.e depending on the level desired:    
 # Insert m + m' between two adjacent integers m and m'.   
@@ -280,7 +284,7 @@ print([level_idx(s)[1] for s in paths_lvl3])
 # This construction is defined from different sources:
 
 # %% [markdown]
-# #### Stern (diatomique) sequence
+# ##  Stern (diatomique) sequence
 #
 # can be defined by 
 # $$s(0) = 0,\  s(1) = 1 \  \textrm{and} \ \ 
@@ -329,7 +333,7 @@ for l in SBnums_5:
     print(l)
 
 # %% [markdown]
-# This first result give the five first levels of the numerators tree: 
+# This first result `SBnums_5` give the five first levels of the numerators tree: 
 
 # %%
 print_bintree(SBnums_5)
@@ -414,7 +418,8 @@ for frac in [Fraction(*pair) for pair in zip(stern_levels(m,a=0,b=1)[1],stern_le
     print(frac,end=' ')
 
 # %% [markdown]
-# #### the fundamental fact:  
+#  #  The tree of all positive irreducibles fractions  
+# the fundamental fact:  
 # If $m/n < m'/n'$ are consecutive fractions at any
 # stage of the construction, we have:   $m'n − mn' = 1$  
 # By Bezout identity, it means that $m,n$ are relatively prime (or coprime) and the same for the pair $m',n'$.
@@ -425,7 +430,7 @@ for frac in [Fraction(*pair) for pair in zip(stern_levels(m,a=0,b=1)[1],stern_le
 # 2. when we insert a new mediant $(m + m')/(n + n')$ , the new cases that need to be checked are:   
 # $$(m + m')n − m(n + n') = 1 $$ 
 # $$m'(n + n') − (m + m')n' = 1$$ 
-# Both of these equations are equivalent to the original condition.  
+# Both of these equations, after simplification, are equivalent to the original condition.  
 # So $m \perp n$, $m' \perp n'$ and we have the same for the mediant $(m + m') \perp (n + n')$
 # 3. Furthermore as the integers are non negatives and as 
 # $$m'n − mn' = 1 \Leftrightarrow \frac{m'}{n'} − \frac{m}{n} = \frac{1}{nn'}$$      
@@ -457,18 +462,9 @@ for frac in [Fraction(*pair) for pair in zip(stern_levels(m,a=0,b=1)[1],stern_le
 #
 
 # %% [markdown]
-# ### Calkin-Wilf  tree
-# In an article named [_Recounting the rationals_](https://fermatslibrary.com/s/recounting-the-rationals#email-newsletter) Neil Calkin and Herbert S. Wilf give another tree representation of the rationals using the **Stern (diatomic) sequence**  
-# this sequence can be defined by 
-# $$s(0) = 0,\  s(1) = 1 \  \textrm{and} \ \ 
-# s(2n) = s(n),\  s(2n + 1) = s(n) + s(n + 1)\ 
-# \textrm{when} \ (n ≥ 1)$$.
-# This sequence, which appears in different notations in the literature, is sequence A002487 in
-# [_The On-Line Encyclopedia of Integer Sequences_](http://oeis.org/A002487), where numerous properties and references can be found. The first few nonzero terms of
-# the sequence (1) are easily seen to be **1**, **1**, 2, **1**, 3, 2, 3, **1**, 4, 3, 5, 2, 5, 3, 4, **1**, 5,. . . , where
-# those with an index that is a power of 2 are shown in bold.
-# [Rational Trees and Binary Partitions](http://www.luschny.de/math/seq/RationalTreesAndBinaryPartitions.html)  from Peter Luschny, March 2010.  
-# But the second result of `stern_levels(m)` is just the list of the first $2^m-1$ terms of this sequence (without the leading 0) and represents the first $2^m-1$ numerators of the Calkin-Wilf representation according to their article.
+# # Calkin-Wilf tree  
+# In an article named [_Recounting the rationals_](https://fermatslibrary.com/s/recounting-the-rationals#email-newsletter) Neil Calkin and Herbert S. Wilf give another tree representation of the rationals using the **Stern (diatomic) sequence**  cited above.
+# And we saw that the second result of `stern_levels(m)` is just the list of the first $2^m-1$ terms of this sequence (without the leading 0) and represents the first $2^m-1$ numerators of the Calkin-Wilf representation according to their article.  
 # For example for $m = 5$:
 
 # %%
@@ -476,7 +472,7 @@ stern_list_5 = stern_levels(5)[1]
 print(stern_list_5)
 
 # %% [markdown]
-# If we build a binary tree from this sequence we get the binary tree of the numerators of the Calkin-Wilf tree 
+# If we build a binary tree from this sequence as generated by `bin_levels(stern_list_5)` we get the binary tree of the numerators of the Calkin-Wilf tree 
 
 # %%
 print_bintree(bin_levels(stern_list_5))
@@ -488,7 +484,7 @@ print_bintree(bin_levels(stern_list_5))
 print(stern_list_5[1:]+[1])
 
 # %% [markdown]
-# And as described in the same article [_Recounting the rationals_](https://fermatslibrary.com/s/recounting-the-rationals#email-newsletter) we can build Calkin-Wilf tree representing all the rationals. More exactly we build a new function `CWpairs(m)` returning the first $m$ levels with the first $2^m - 1$ nodes of this tree
+# And as described in the same article [_Recounting the rationals_](https://fermatslibrary.com/s/recounting-the-rationals#email-newsletter) we can build Calkin-Wilf tree representing all the irreducible positive fractions. More exactly we build a new function `CWpairs(m)` returning the first $m$ levels with the first $2^m - 1$ nodes of this tree, where each node is a pair of integers `(num,den)` instead of the fraction `num/den`.
 
 # %%
 def CWpairs(m):
@@ -517,7 +513,7 @@ print_bintree(CWpairs(5),fmt=lambda pair:str(Fraction(*pair)))
 print(stern_levels(5)[1])
 
 # %% [markdown]
-# ### Stern-Brocot tree  or Calkin-Wilf tree as number system for representing rational numbers
+# #  Stern-Brocot tree  or Calkin-Wilf tree as number system for representing positive irreducible fractions.    
 # As we presented in the chapter on **Binary Trees** we can use use the letters L and R  for going down to the left or right branch as we proceed from the root of a tree to a particular fraction and a string of L's and R's uniquely identifies a place in the tree.  
 # In the Stern-Brocot tree, for example, LRLL means that we go left from 1/1 down to 1/2 , then right to 2/3 , then left to 3/5 , then left to 4/7 .  
 # In this tree we can consider LRLL to be a representation of 4/7 . Every positive fraction gets represented in this way as a unique string of L's and R's.  
@@ -533,11 +529,19 @@ print(stern_levels(5)[1])
 # In this case `CWfrac('LRLL') == Fraction(3,8)`.
 
 # %% [markdown]
-# #### Matrix representation  
-# We define some functions using `numpy arrays` for 2x2 matrices corresponding  
-# to strings composed of chars in 'ILR' describing pathes in a binary string:  
-# ''→ I, 'I' → I, 'L' → L, 'R' → R   
-# and a string, sequence of 'L' and 'R' by the product M of the corresponding matrices L and R   
+# #  Stern-Brocot matrix representation  
+# To the elementary path strings '' ou 'I', 'L', 'R' in the Stern-Brocot tree we associate 2x2 matrices:    
+# To the path '' or 'I' we associate the root 1/1, as well by the vector $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$. But this root is also the mediant of 0/1 and 1/0, or using vectors, the mediant of the two vectors $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ and $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$, that can be viewed as the column vectors of the matrix $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$.   
+# It would be more pleasant, if this matrix was the unit matrix  $\begin{equation*}I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}\end{equation*}$, which is equivalent in the Stern-Brocot's case to represent the fraction 0/1 by the column vector $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ and in general,  always in the Stern-Brocot case, a fraction num/den by the column vector $\begin{bmatrix} den \\ num \end{bmatrix}$   
+#  
+# We move to the left with the matrix $\begin{equation*}L = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}\end{equation*}$:  The root's left son $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$ (for  1/2) $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ is the mediant of the two column vectors $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ and $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ and furthermore  
+# $\begin{equation*}L \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 \\ 1 \end{bmatrix}\end{equation*}$  
+#
+# We move to the right with the matrix $\begin{equation*}R = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}\end{equation*}$:  The root's right son $\begin{bmatrix} 1 \\ 2 \end{bmatrix}$ (for  2/1)  $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ is the mediant of the two column vectors $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ et $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ and 
+# $\begin{equation*}R \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}\end{equation*}$       
+# Now we can represent a path string compound with chars in 'IRL',that is a sequence of 'L' and 'R' by the matrix product M of the corresponding matrices L and R.   
+# En Python nous définirons les matrices par des arrays numpy `np.array` de shape `(2, 2)` et les fonctions suivantes:
+# In Python we'll define 2x2 matrices by `numpy arrays` of shape `(2, 2)` ans the next funtions:
 # `powmat(M,n)`   for $M^n$ where $M$ is a matrix   
 # `matprod(mats)` for the matrix product $M_0 M_1 \cdots M_n$ if  $\textrm{mats} = [M_0, M_1, \cdots, M_n]$ where, for $0 \leq i \leq n$,  $M_i$  is L or R.    
 # `path2mat(S)`   for the matrix product of the elementary matrices L,R present in a binary string S node's path
@@ -546,7 +550,7 @@ print(stern_levels(5)[1])
 """ Specific 2x2 matrices in the Stern-Brocot context"""
 L = np.array([[1,1],[0,1]])  # left move, left root's son
 R = np.array([[1,0],[1,1]])  # right move, right root's son
-I = np.eye(2,dtype=int)      #identity, root
+I = np.eye(2,dtype=int)      # identity, root
 
 def powmat(M: np.array, n: int) -> np.array:
     """ return the n-th power of a matrix M 
@@ -597,6 +601,9 @@ print(R)
 powmat(L,0)
 
 # %%
+L.shape
+
+# %%
 L@L@L
 
 # %%
@@ -623,7 +630,7 @@ print(M)
 print(M@[1,1])
 
 # %% [markdown]
-# **Calkin-Wilf tree matrix representation**  
+# # Calkin-Wilf tree matrix representation  
 # If we consider a Calkin-Wilf tree's node $\dfrac{n}{d}$  represented by the line vector $\begin{bmatrix}n & d\end{bmatrix}$   
 # The product $\begin{equation*}\begin{bmatrix}n & d\end{bmatrix}L = \begin{bmatrix}n & d\end{bmatrix}\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix}n & n + d\end{bmatrix}\end{equation*}$ represents the node $\dfrac{n}{n+d}$  
 # The product $\begin{equation*}\begin{bmatrix}n & d\end{bmatrix}R = \begin{bmatrix}n & d\end{bmatrix}\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix} = \begin{bmatrix}n + d & d \end{bmatrix}\end{equation*}$ represents the node $\dfrac{n+d}{d}$   
@@ -716,10 +723,10 @@ print_bintree(CWlevels5)
 # in the Stern-Brocot tree representation and in the Calkin-Wilf tree representation of the rationals
 
 # %% [markdown]
-# #### string path corresponding to a given fraction
+#  # string path corresponding to a given fraction
 
 # %% [markdown]
-# ##### Stern-Brocot tree first version  
+# ## Stern-Brocot tree first version  
 # Each node fraction of Stern-Brocot tree is greater than the left son fraction and less than the right son fraction:  
 # for each path `S`: `SBfrac(S + 'L') < SBfrac(S) < SBfrac(S + 'R')`  
 # So, to reach a node carrying a fraction `n/d`, we move from the root `1` to the searched node depending if the current node's fraction is less or greater than `n/d`, as described in the function `SBpathDemo(frac)`.
@@ -759,7 +766,7 @@ def SBpathDemo(frac: Union[Tuple[int, int], str]) -> str:
 SBpathDemo(3/8)
 
 # %% [markdown]
-# ##### Calkin-Wilf tree
+# ## Calkin-Wilf tree
 # From the matrix representation of Calkin-Wilf tree we know that for a node carrying the fraction `n/d`:
 # * if `d > n` this node is the left son of the node carrying the fraction `n/(d-n)`
 # * if `d < n` this node is the right son of the node carrying the fraction `(n-d)/d`
@@ -840,7 +847,7 @@ def CWpath(frac: Union[Tuple[int, int], str]) -> str:
 CWpath(3/8)
 
 # %% [markdown]
-# ##### Stern-Brocot tree second version  
+# ## Stern-Brocot tree second version  
 # We know that:  
 # For each path string `S`: `SBfrac(S) == CWfrac(S[::-1])`  
 # We deduce from this result than:  
@@ -903,8 +910,8 @@ def SBpath(frac: Union[Tuple[int, int], str]) -> str:
 print(SBpath(3/8) == CWpath(3/8)[::-1] == 'LLRL')
 
 # %% [markdown]
-# ##### Approximation of real numbers  
-# We can use the same algorithm to get an approximation of a real number $x$ by a Stern Brocot path of length $n$ and the corresponding fractions:
+# # Approximation of real numbers  
+# We can use the same algorithm to get an approximation of a real number $x$ by a Stern Brocot path of length $n$ and the corresponding fraction:
 
 # %%
 def SBrealpath(x: float, n: int) -> str:
@@ -934,6 +941,10 @@ SB_e20 = SBrealpath(e,20)
 
 # %%
 SB_e20
+
+# %%
+frac_e20 = SBfrac(SB_e20)
+print('{} ~ {}'.format(frac_e20, frac_e20.numerator/frac_e20.denominator))
 
 # %% [markdown]
 # And using `SBfrac` it's easy to get a sequence of fractions approximating a real number `x`, where `n` can be a number or a slice as `slice(12,41,2)`, meaning to return only the fractions corresponding to the paths from 12 characters up to 40 characters included by steps of 2 (12,14,16,...,40):
@@ -1007,11 +1018,7 @@ SB_pi
 print(prettySBrealfrac(pi,slice(21,401,20)))
 
 # %% [markdown]
-# ### The Stern-Brocot tree in $\mathbb{N^2}$
-
-# %% {"code_folding": []}
-#import nbimporter
-#from SButilsNote import plot_pt2pts,plot_points
+# # The Stern-Brocot tree in $\mathbb{N^2}$
 
 # %% {"code_folding": []}
 # matplotlib functions
@@ -1133,6 +1140,20 @@ def rel_prime(a: int, b: int) -> bool:
 
 # %%
 rel_prime(3,8)
+
+# %% {"code_folding": [0]}
+#click to see the plot's code 
+xmax = 22
+plt.rcParams["figure.figsize"] =  [6.0, 6.0]
+fig = plt.figure()
+sub = fig.add_subplot(1,1, 1)
+for lin in range(1,xmax+1):
+    xpts = [col for col in range(1,xmax+1) if rel_prime(col,lin)]
+    ypts = len(xpts)*[lin]
+    for i in range(len(xpts)):
+        sub.plot(xpts[i], ypts[i], color='red', marker='o')
+gridticks(sub,xmajticks=(0,xmax+1,1))
+sub.set_xlabel('Stern-Brocot: coprimes pairs')
 
 # %% [markdown]
 # and adding more branches to the Stern-Brocot tree, plotting the branches linking a node to his father.  
@@ -1267,3 +1288,9 @@ for lin in range(1,xmax+1):
 gridticks(sub3,xmajticks=(0,xmax+1,1))
 sub3.set_xlabel('Stern-Brocot: coprimes pairs and SBsons')
 plt.show()
+
+# %%
+
+
+# %%
+
